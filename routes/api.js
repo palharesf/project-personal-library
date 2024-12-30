@@ -1,11 +1,3 @@
-/*
-*
-*
-*       Complete the API routing below
-*       
-*       
-*/
-
 'use strict';
 
 module.exports = function (app) {
@@ -46,9 +38,17 @@ module.exports = function (app) {
 
 
   app.route('/api/books/:id')
-    .get(function (req, res){
+    .get(function (req, res) {
       let bookid = req.params.id;
-      //json res format: {"_id": bookid, "title": book_title, "comments": [comment,comment,...]}
+      if (!bookMap.has(bookid)) {
+        return res.send('no book exists');
+      }
+      const book = bookMap.get(bookid);
+      res.json({
+        _id: bookid,
+        title: book.title,
+        comments: book.comments || []
+      });
     })
     
     .post(function(req, res){
