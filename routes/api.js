@@ -54,7 +54,20 @@ module.exports = function (app) {
     .post(function(req, res){
       let bookid = req.params.id;
       let comment = req.body.comment;
-      //json res format same as .get
+      if (!bookMap.has(bookid)) {
+        return res.send('no book exists');
+      }
+      if (!comment) {
+        return res.send('missing required field comment');
+      }
+      const book = bookMap.get(bookid);
+      book.comments = book.comments || [];
+      book.comments.push(comment);
+      res.json({
+        _id: bookid,
+        title: book.title,
+        comments: book.comments
+      });
     })
     
     .delete(function(req, res){
