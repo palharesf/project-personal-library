@@ -72,7 +72,11 @@ module.exports = function (app) {
     
     .delete(function(req, res){
       let bookid = req.params.id;
-      //if successful response will be 'delete successful'
+      if (!bookMap.has(bookid)) {
+        return res.send('no book exists');
+      }
+      bookMap.delete(bookid);
+      res.send('delete successful');
     });
   
 };
