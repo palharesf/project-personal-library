@@ -10,15 +10,33 @@
 
 module.exports = function (app) {
 
+  const bookMap = new Map();
+
   app.route('/api/books')
     .get(function (req, res){
-      //response will be array of book objects
-      //json res format: [{"_id": bookid, "title": book_title, "commentcount": num_of_comments },...]
+      const result = [];
+      for (let [key, value] of bookMap.entries()) {
+        result.push({
+          _id: key,
+          title: value.title,
+          commentcount: value.comments ? value.comments.length : 0
+        });
+      }
+      res.json(result);
     })
     
     .post(function (req, res){
       let title = req.body.title;
-      //response will contain new book object including atleast _id and title
+      if (typeof title === 'undefined' || title === '') {
+        res.send('missing required field title');
+      } else {
+        const _id = new Date().getTime().toString(32);
+        bookMap.set(_id, { title });
+        res.json({
+          _id,
+          title
+        });
+      }
     })
     
     .delete(function(req, res){
